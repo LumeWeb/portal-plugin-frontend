@@ -21,10 +21,7 @@ jobs:
           COMMIT_HASH="${{ github.event.client_payload.commit_hash }}"
           VERSION="${{ github.event.client_payload.version }}"
           APP_NAME="${{ github.event.client_payload.app_name }}"
-          TIMESTAMP=$(date -u +"%Y%m%d%H%M%S")
           
-          # Generate the new version string
-          NEW_VERSION="v${VERSION}-${APP_NAME}-go.0.${TIMESTAMP}-${COMMIT_HASH}"
           
           # Update the dependency
           GOPROXY=direct go get "go.lumeweb.com/web/go/${APP_NAME}@${COMMIT_HASH}"
