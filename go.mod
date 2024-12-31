@@ -6,6 +6,8 @@ require (
 	github.com/google/go-github/v50 v50.2.0
 	github.com/gorilla/mux v1.8.2-0.20240619235004-db9d1d0073d2
 	go.lumeweb.com/portal v0.3.3-0.20241229120530-818c9852cab6
+	go.lumeweb.com/web/go/portal-frontend v0.0.0-20241231152739-e6ca16b6231b
+	go.uber.org/zap v1.27.0
 )
 
 require (
@@ -68,14 +70,12 @@ require (
 	go.etcd.io/etcd/api/v3 v3.5.17 // indirect
 	go.etcd.io/etcd/client/pkg/v3 v3.5.17 // indirect
 	go.etcd.io/etcd/client/v3 v3.5.17 // indirect
-	go.lumeweb.com/web/go/portal-frontend v0.0.0-20241231152739-e6ca16b6231b // indirect
 	go.sia.tech/core v0.4.7 // indirect
 	go.sia.tech/coreutils v0.3.3-0.20240927170025-f45eedc64d6f // indirect
 	go.sia.tech/mux v1.3.0 // indirect
 	go.sia.tech/renterd v1.0.8 // indirect
 	go.sia.tech/siad v1.5.10-0.20230228235644-3059c0b930ca // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	go.uber.org/zap v1.27.0 // indirect
 	golang.org/x/crypto v0.31.0 // indirect
 	golang.org/x/exp v0.0.0-20240707233637-46b078467d37 // indirect
 	golang.org/x/net v0.30.0 // indirect
