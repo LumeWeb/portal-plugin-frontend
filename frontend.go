@@ -1,4 +1,4 @@
-package main
+package frontend
 
 import (
 	"go.lumeweb.com/portal-plugin-frontend/build"
