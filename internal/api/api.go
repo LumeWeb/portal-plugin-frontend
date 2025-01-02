@@ -108,7 +108,7 @@ func (a *API) Configure(router *mux.Router, _ core.AccessService) error {
 		httpHandler = portal_frontend.Handler()
 	}
 
-	router.PathPrefix("/assets/").Handler(httpHandler)
+	router.PathPrefix("/_astro/").Handler(httpHandler)
 	router.PathPrefix("/").MatcherFunc(func(r *http.Request, rm *mux.RouteMatch) bool {
 		return !strings.HasPrefix(r.URL.Path, "/api/")
 	}).Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
