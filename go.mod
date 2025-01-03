@@ -6,7 +6,7 @@ require (
 	github.com/google/go-github/v50 v50.2.0
 	github.com/gorilla/mux v1.8.2-0.20240619235004-db9d1d0073d2
 	go.lumeweb.com/portal v0.3.3-0.20241229120530-818c9852cab6
-	go.lumeweb.com/web/go/portal-frontend v0.0.0-20241231152739-e6ca16b6231b
+	go.lumeweb.com/web/go/portal-frontend v0.0.0-20250103022554-0a154588ffe3
 	go.uber.org/zap v1.27.0
 )
 

@@ -464,8 +464,8 @@ go.etcd.io/etcd/client/v3 v3.5.17 h1:o48sINNeWz5+pjy/Z0+HKpj/xSnBkuVhVvXkjEXbqZY
 go.etcd.io/etcd/client/v3 v3.5.17/go.mod h1:j2d4eXTHWkT2ClBgnnEPm/Wuu7jsqku41v9DZ3OtjQo=
 go.lumeweb.com/portal v0.3.3-0.20241229120530-818c9852cab6 h1:WaftfcPgqUtbpJQuFyMmEayT6NRXUYz9UiXAJh4nf5I=
 go.lumeweb.com/portal v0.3.3-0.20241229120530-818c9852cab6/go.mod h1:/XrEC72evgCNN7SYRUmJNt7UISTL9pekAUtB9DSmINM=
-go.lumeweb.com/web/go/portal-frontend v0.0.0-20241231152739-e6ca16b6231b h1:8h9AS7C7WQBDryvh0EIE/jH7cjCD9ZFBvzSL9MGPrxg=
-go.lumeweb.com/web/go/portal-frontend v0.0.0-20241231152739-e6ca16b6231b/go.mod h1:PXTl7R6Rzt8usd6KsuNYQ/Kd9ITvmI5GxQXKQipPFbE=
+go.lumeweb.com/web/go/portal-frontend v0.0.0-20250103022554-0a154588ffe3 h1:d9gIvN/LtASbReGKkcINay/QjOU363946CbFNesciNg=
+go.lumeweb.com/web/go/portal-frontend v0.0.0-20250103022554-0a154588ffe3/go.mod h1:PXTl7R6Rzt8usd6KsuNYQ/Kd9ITvmI5GxQXKQipPFbE=
 go.sia.tech/core v0.4.7 h1:UAyErZ3nk5/7N0gIG0OEEJJrxh7ru8lgGLlaNtT/Jq0=
 go.sia.tech/core v0.4.7/go.mod h1:j2Ke8ihV8or7d2VDrFZWcCkwSVHO0DNMQJAGs9Qop2M=
 go.sia.tech/coreutils v0.3.3-0.20240927170025-f45eedc64d6f h1:2dWC/pKbdvdK1Xy4lvyHpRnYLuPtIp6Meg+AFSToSA0=
