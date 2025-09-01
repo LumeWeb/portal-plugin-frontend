@@ -94,15 +94,15 @@ func (a *API) createGitHubFS(gitRepo string) (fs.FS, error) {
 	if err != nil {
 		return nil, err
 	}
-	
+
 	if u.Host != GitHubHost {
 		return nil, fmt.Errorf("only %s repos are supported: %s", GitHubHost, gitRepo)
 	}
-	
-	path := u.Path
-	path = strings.TrimPrefix(path, "/")
-	path = strings.TrimSuffix(path, "/")
-	components := strings.Split(path, "/")
+
+	_path := u.Path
+	_path = strings.TrimPrefix(_path, "/")
+	_path = strings.TrimSuffix(_path, "/")
+	components := strings.Split(_path, "/")
 	if len(components) < 2 {
 		return nil, fmt.Errorf("invalid Git repository URL: %s", gitRepo)
 	}
@@ -120,21 +120,21 @@ func (a *API) createGitHubFS(gitRepo string) (fs.FS, error) {
 		httpClient.Timeout = 60 * time.Second
 	}
 	client := github.NewClient(httpClient)
-	
+
 	release, _, err := client.Repositories.GetLatestRelease(ctx, owner, repo)
 	if err != nil {
 		return nil, err
 	}
-	
+
 	if release.ZipballURL == nil || *release.ZipballURL == "" {
 		return nil, fmt.Errorf("latest release for %s/%s has no zipball URL", owner, repo)
 	}
-	
+
 	req, err := http.NewRequestWithContext(ctx, "GET", *release.ZipballURL, nil)
 	if err != nil {
 		return nil, err
 	}
-	
+
 	req.Header.Set("Accept", "application/octet-stream")
 	req.Header.Set("User-Agent", "portal-plugin-frontend")
 	// Use the same (possibly OAuth2) httpClient for the zipball request.
@@ -142,13 +142,13 @@ func (a *API) createGitHubFS(gitRepo string) (fs.FS, error) {
 	if err != nil {
 		return nil, err
 	}
-	
+
 	defer func() {
 		if err := resp.Body.Close(); err != nil {
 			a.logger.Error("failed to close response body", zap.Error(err))
 		}
 	}()
-	
+
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("unexpected status fetching zipball: %s", resp.Status)
 	}
@@ -159,20 +159,20 @@ func (a *API) createGitHubFS(gitRepo string) (fs.FS, error) {
 	if err != nil {
 		return nil, err
 	}
-	
+
 	byteReader := bytes.NewReader(buf)
 	zipFs, err := zip.NewReader(byteReader, int64(byteReader.Len()))
 	if err != nil {
 		return nil, err
 	}
-	
+
 	// Sub-root: handle top-level dir and optional dist/ for Astro builds.
 	// Prefer <top>/dist if present, else <top>.
 	entries, err := fs.ReadDir(zipFs, ".")
 	if err != nil {
 		return nil, err
 	}
-	
+
 	if len(entries) == 1 && entries[0].IsDir() {
 		top := entries[0].Name()
 		if _, err := fs.Stat(zipFs, path.Join(top, "dist")); err == nil {
@@ -184,7 +184,7 @@ func (a *API) createGitHubFS(gitRepo string) (fs.FS, error) {
 			return sub, nil
 		}
 	}
-	
+
 	return zipFs, nil
 }
 
