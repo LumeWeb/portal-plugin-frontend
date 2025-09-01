@@ -48,10 +48,7 @@ func (a *API) Name() string {
 }
 
 func (a *API) OpenAPIInfo() router.APIInfoDefinition {
-	return router.APIInfo().
-		Title("Frontend API").
-		Description("API for serving the frontend application").
-		Version("0.1.0")
+	return nil
 }
 
 func NewAPI() (core.API, []core.ContextBuilderOption, error) {
