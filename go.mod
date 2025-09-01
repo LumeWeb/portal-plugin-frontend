@@ -6,8 +6,9 @@ require (
 	github.com/google/go-github/v50 v50.2.0
 	go.lumeweb.com/portal v0.4.2-0.20250901122950-34f48afa2984
 	go.lumeweb.com/portal-router v0.6.6
-	go.lumeweb.com/web/go/portal-frontend v0.0.0-20250103022554-0a154588ffe3
+	go.lumeweb.com/web/go/portal-frontend v0.0.0-20250901085632-2046a8de4fd9
 	go.uber.org/zap v1.27.0
+	golang.org/x/oauth2 v0.30.0
 )
 
 require (
@@ -45,7 +46,6 @@ require (
 	github.com/getkin/kin-openapi v0.132.0 // indirect
 	github.com/ghodss/yaml v1.0.0 // indirect
 	github.com/go-co-op/gocron/v2 v2.16.3 // indirect
-	github.com/go-gorm/caches/v4 v4.0.5 // indirect
 	github.com/go-openapi/jsonpointer v0.21.1 // indirect
 	github.com/go-openapi/swag v0.23.1 // indirect
 	github.com/go-sql-driver/mysql v1.9.3 // indirect
@@ -76,7 +76,6 @@ require (
 	github.com/mailru/easyjson v0.9.0 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
-	github.com/mattn/go-sqlite3 v1.14.28 // indirect
 	github.com/mfridman/interpolate v0.0.2 // indirect
 	github.com/minio/sha256-simd v1.0.1 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
@@ -123,13 +122,11 @@ require (
 	go.sia.tech/coreutils v0.16.5 // indirect
 	go.sia.tech/jape v0.14.0 // indirect
 	go.sia.tech/mux v1.4.0 // indirect
-	go.sia.tech/renterd v1.1.1 // indirect
 	go.sia.tech/renterd/v2 v2.4.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/crypto v0.41.0 // indirect
 	golang.org/x/exp v0.0.0-20250620022241-b7579e27df2b // indirect
 	golang.org/x/net v0.43.0 // indirect
-	golang.org/x/oauth2 v0.30.0 // indirect
 	golang.org/x/sync v0.16.0 // indirect
 	golang.org/x/sys v0.35.0 // indirect
 	golang.org/x/text v0.28.0 // indirect
@@ -142,7 +139,6 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gorm.io/datatypes v1.2.6 // indirect
 	gorm.io/driver/mysql v1.6.0 // indirect
-	gorm.io/driver/sqlite v1.6.0 // indirect
 	gorm.io/gorm v1.30.1 // indirect
 	lukechampine.com/blake3 v1.4.1 // indirect
 	lukechampine.com/frand v1.5.1 // indirect
