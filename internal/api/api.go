@@ -71,10 +71,10 @@ func NewAPI() (core.API, []core.ContextBuilderOption, error) {
 }
 
 func (a *API) Configure(gRouter router.Router, _ core.AccessService) error {
-	cfg := a.config.GetAPI(internal.PLUGIN_NAME).(*pluginConfig.APIConfig)
+	cfg := core.GetAPIConfig[*pluginConfig.APIConfig](a.ctx, internal.PLUGIN_NAME)
 
 	var fsHandler fs.FS
-	if cfg.GitRepo != "" {
+	if cfg != nil && cfg.GitRepo != "" {
 		handler, err := a.createGitHubFS(cfg.GitRepo)
 		if err != nil {
 			return err

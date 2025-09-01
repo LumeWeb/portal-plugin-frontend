@@ -4,8 +4,6 @@ import (
 	"go.lumeweb.com/portal/config"
 )
 
-const PLUGIN_NAME = "frontend"
-
 var _ config.APIConfig = (*APIConfig)(nil)
 
 type APIConfig struct {
