@@ -8,7 +8,7 @@ require (
 	go.lumeweb.com/portal-router v0.6.6
 	go.lumeweb.com/web/go/portal-frontend v0.0.0-20250901085632-2046a8de4fd9
 	go.uber.org/zap v1.27.0
-	golang.org/x/oauth2 v0.30.0
+	golang.org/x/oauth2 v0.31.0
 )
 
 require (
