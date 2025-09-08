@@ -5,7 +5,7 @@ go 1.24.3
 require (
 	github.com/google/go-github/v50 v50.2.0
 	go.lumeweb.com/portal v0.4.2-0.20250901122950-34f48afa2984
-	go.lumeweb.com/portal-router v0.6.6
+	go.lumeweb.com/portal-router v0.6.7
 	go.lumeweb.com/web/go/portal-frontend v0.0.0-20250901085632-2046a8de4fd9
 	go.uber.org/zap v1.27.0
 	golang.org/x/oauth2 v0.30.0
@@ -115,7 +115,7 @@ require (
 	go.etcd.io/etcd/client/v3 v3.6.4 // indirect
 	go.lumeweb.com/configmanager v0.3.19 // indirect
 	go.lumeweb.com/event/v2 v2.1.0 // indirect
-	go.lumeweb.com/gswagger v0.20.8 // indirect
+	go.lumeweb.com/gswagger v0.20.9 // indirect
 	go.lumeweb.com/portal-middleware v0.2.10 // indirect
 	go.lumeweb.com/queryutil v0.3.12 // indirect
 	go.sia.tech/core v0.14.1 // indirect
