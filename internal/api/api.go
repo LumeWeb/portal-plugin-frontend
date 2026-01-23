@@ -34,17 +34,19 @@ const (
 var _ core.API = (*API)(nil)
 
 type API struct {
-	ctx    core.Context
-	config config.Manager
-	logger *core.Logger
+	*core.BaseComponent
 }
 
-func (a *API) Config() config.APIConfig {
+func (a *API) GetConfig() config.APIConfig {
 	return &pluginConfig.APIConfig{}
 }
 
 func (a *API) Name() string {
 	return internal.PLUGIN_NAME
+}
+
+func (a *API) ID() string {
+	return a.Name()
 }
 
 func (a *API) OpenAPIInfo() router.APIInfoDefinition {
@@ -54,21 +56,11 @@ func (a *API) OpenAPIInfo() router.APIInfoDefinition {
 func NewAPI() (core.API, []core.ContextBuilderOption, error) {
 	api := &API{}
 
-	opts := core.ContextOptions(
-		core.ContextWithStartupFunc(func(ctx core.Context) error {
-			api.ctx = ctx
-			api.config = ctx.Config()
-			api.logger = ctx.APILogger(api)
-
-			return nil
-		}),
-	)
-
-	return api, opts, nil
+	return api, nil, nil
 }
 
 func (a *API) Configure(gRouter router.Router, _ core.AccessService) error {
-	cfg := core.GetAPIConfig[*pluginConfig.APIConfig](a.ctx, internal.PLUGIN_NAME)
+	cfg := core.GetAPIConfig[*pluginConfig.APIConfig](a.Context(), internal.PLUGIN_NAME)
 
 	var fsHandler fs.FS
 	if cfg != nil && cfg.GitRepo != "" {
@@ -142,7 +134,7 @@ func (a *API) createGitHubFS(gitRepo string) (fs.FS, error) {
 
 	defer func() {
 		if err := resp.Body.Close(); err != nil {
-			a.logger.Error("failed to close response body", zap.Error(err))
+			a.Logger().Error("failed to close response body", zap.Error(err))
 		}
 	}()
 
