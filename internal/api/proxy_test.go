@@ -3,6 +3,7 @@ package api
 import (
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"strings"
 	"testing"
 
@@ -101,7 +102,7 @@ func TestNewGatewayProxy_StripSpoofedForwardedHost(t *testing.T) {
 	}
 }
 
-func TestNewGatewayProxy_AppendForwardedFor(t *testing.T) {
+func TestNewGatewayProxy_StripSpoofedForwardedFor(t *testing.T) {
 	var receivedForwardedFor string
 	backend := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		receivedForwardedFor = r.Header.Get("X-Forwarded-For")
@@ -125,10 +126,42 @@ func TestNewGatewayProxy_AppendForwardedFor(t *testing.T) {
 	rec := httptest.NewRecorder()
 	frontend.Config.Handler.ServeHTTP(rec, req)
 
-	if !strings.Contains(receivedForwardedFor, "9.9.9.9") {
-		t.Errorf("X-Forwarded-For = %q, want it to contain %q", receivedForwardedFor, "9.9.9.9")
+	if strings.Contains(receivedForwardedFor, "9.9.9.9") {
+		t.Errorf("X-Forwarded-For = %q, should not contain spoofed %q", receivedForwardedFor, "9.9.9.9")
 	}
 	if !strings.Contains(receivedForwardedFor, "10.0.0.1") {
 		t.Errorf("X-Forwarded-For = %q, want it to contain %q", receivedForwardedFor, "10.0.0.1")
+	}
+}
+
+func TestNewGatewayProxy_PathPrefixJoining(t *testing.T) {
+	var receivedPath string
+	backend := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		receivedPath = r.URL.Path
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer backend.Close()
+
+	backendURL, _ := url.Parse(backend.URL)
+	gatewayURL := backendURL.Scheme + "://" + backendURL.Host + "/ipfs/QmHash"
+
+	proxy, err := newGatewayProxy(gatewayURL, zap.NewNop())
+	if err != nil {
+		t.Fatalf("newGatewayProxy: %v", err)
+	}
+
+	frontend := httptest.NewServer(proxy)
+	defer frontend.Close()
+
+	req := httptest.NewRequest(http.MethodGet, "/index.html", nil)
+	req.Host = "example.com"
+	req.RemoteAddr = "10.0.0.1:1234"
+
+	rec := httptest.NewRecorder()
+	frontend.Config.Handler.ServeHTTP(rec, req)
+
+	want := "/ipfs/QmHash/index.html"
+	if receivedPath != want {
+		t.Errorf("path = %q, want %q", receivedPath, want)
 	}
 }

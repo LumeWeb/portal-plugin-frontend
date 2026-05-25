@@ -7,6 +7,7 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"os"
+	"strings"
 	"time"
 
 	"go.uber.org/zap"
@@ -34,6 +35,8 @@ func newGatewayProxy(gatewayURL string, logger *zap.Logger) (http.Handler, error
 
 			req.URL.Scheme = target.Scheme
 			req.URL.Host = target.Host
+			req.URL.Path = singleJoiningSlash(target.Path, req.URL.Path)
+			req.URL.RawPath = singleJoiningSlash(target.RawPath, req.URL.RawPath)
 			req.Host = target.Host
 
 			req.Header.Del("X-Forwarded-Host")
@@ -44,11 +47,8 @@ func newGatewayProxy(gatewayURL string, logger *zap.Logger) (http.Handler, error
 				clientIP = req.RemoteAddr
 			}
 
-			if prior := req.Header.Get("X-Forwarded-For"); prior != "" {
-				req.Header.Set("X-Forwarded-For", prior+", "+clientIP)
-			} else {
-				req.Header.Set("X-Forwarded-For", clientIP)
-			}
+			req.Header.Del("X-Forwarded-For")
+			req.Header.Set("X-Forwarded-For", clientIP)
 		},
 		ErrorHandler: func(w http.ResponseWriter, req *http.Request, err error) {
 			logger.Error("gateway proxy error", zap.Error(err))
@@ -68,4 +68,16 @@ func newGatewayProxy(gatewayURL string, logger *zap.Logger) (http.Handler, error
 
 func (a *API) createGatewayProxy(gatewayURL string) (http.Handler, error) {
 	return newGatewayProxy(gatewayURL, a.Logger().Logger)
+}
+
+func singleJoiningSlash(a, b string) string {
+	aslash := strings.HasSuffix(a, "/")
+	bslash := strings.HasPrefix(b, "/")
+	switch {
+	case aslash && bslash:
+		return a + b[1:]
+	case !aslash && !bslash:
+		return a + "/" + b
+	}
+	return a + b
 }
