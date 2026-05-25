@@ -4,7 +4,6 @@ import (
 	"archive/zip"
 	"bytes"
 	"context"
-	_ "embed"
 	"fmt"
 	"io"
 	"io/fs"
@@ -18,7 +17,7 @@ import (
 	"github.com/google/go-github/v50/github"
 	"go.lumeweb.com/portal-plugin-frontend/internal"
 	pluginConfig "go.lumeweb.com/portal-plugin-frontend/internal/config"
-	"go.lumeweb.com/portal-router"
+	router "go.lumeweb.com/portal-router"
 	"go.lumeweb.com/portal/config"
 	"go.lumeweb.com/portal/core"
 	portal_frontend "go.lumeweb.com/web/go/portal-frontend"
@@ -62,19 +61,26 @@ func NewAPI() (core.API, []core.ContextBuilderOption, error) {
 func (a *API) Configure(gRouter router.Router, _ core.AccessService) error {
 	cfg := core.GetAPIConfig[*pluginConfig.APIConfig](a.Context(), internal.PLUGIN_NAME)
 
-	var fsHandler fs.FS
-	if cfg != nil && cfg.GitRepo != "" {
-		handler, err := a.createGitHubFS(cfg.GitRepo)
-		if err != nil {
-			return err
+	if cfg != nil {
+		if cfg.Gateway != "" {
+			proxy, err := a.createGatewayProxy(cfg.Gateway)
+			if err != nil {
+				return err
+			}
+			return router.SetupStaticRoutes(gRouter, router.StaticConfig{DefaultHandler: proxy})
 		}
-		fsHandler = handler
-	} else {
-		fsHandler = portal_frontend.GetFS()
+
+		if cfg.GitRepo != "" {
+			fsHandler, err := a.createGitHubFS(cfg.GitRepo)
+			if err != nil {
+				return err
+			}
+			router.MustMPASetupWithAssets(gRouter, fsHandler, AstroAssetsDir)
+			return nil
+		}
 	}
 
-	// Ensure fsHandler is rooted at the app directory (e.g., <ziproot>/dist when using Astro)
-	router.MustMPASetupWithAssets(gRouter, fsHandler, AstroAssetsDir)
+	router.MustMPASetupWithAssets(gRouter, portal_frontend.GetFS(), AstroAssetsDir)
 	return nil
 }
 
