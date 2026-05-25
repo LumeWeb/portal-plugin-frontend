@@ -1,6 +1,6 @@
 module go.lumeweb.com/portal-plugin-frontend
 
-go 1.24.13
+go 1.25.0
 
 require (
 	github.com/google/go-github/v50 v50.2.0
@@ -8,7 +8,7 @@ require (
 	go.lumeweb.com/portal-router v0.6.16
 	go.lumeweb.com/web/go/portal-frontend v0.0.0-20260123053442-479cd558a2fc
 	go.uber.org/zap v1.28.0
-	golang.org/x/oauth2 v0.34.0
+	golang.org/x/oauth2 v0.36.0
 )
 
 require (
