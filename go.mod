@@ -6,7 +6,7 @@ require (
 	github.com/google/go-github/v50 v50.2.0
 	go.lumeweb.com/portal v0.4.2-0.20260119002643-a494762862e2
 	go.lumeweb.com/portal-router v0.6.16
-	go.lumeweb.com/web/go/portal-frontend v0.0.0-20260123053442-479cd558a2fc
+	go.lumeweb.com/web/go/portal-frontend v0.0.0-20260526172636-658cb25ff6e4
 	go.uber.org/zap v1.28.0
 	golang.org/x/oauth2 v0.36.0
 )
