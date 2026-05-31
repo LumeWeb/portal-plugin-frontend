@@ -48,8 +48,8 @@ func TestNewGatewayProxy_ProxiesRequest(t *testing.T) {
 		t.Errorf("X-Forwarded-Host = %q, want %q", got, "example.com")
 	}
 
-	if got := rec.Header().Get("X-Got-Host"); got != backend.Listener.Addr().String() {
-		t.Errorf("Host = %q, want %q", got, backend.Listener.Addr().String())
+	if got := rec.Header().Get("X-Got-Host"); got != "example.com" {
+		t.Errorf("Host = %q, want %q (original host preserved for vhost/SNI)", got, "example.com")
 	}
 }
 

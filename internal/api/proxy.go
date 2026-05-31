@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"fmt"
 	"net"
 	"net/http"
@@ -19,9 +20,27 @@ func newGatewayProxy(gatewayURL string, logger *zap.Logger) (http.Handler, error
 		return nil, fmt.Errorf("invalid gateway URL: %w", err)
 	}
 
+	resolvedHost := target.Hostname()
+	addrs, err := net.DefaultResolver.LookupHost(context.Background(), resolvedHost)
+	if err != nil {
+		return nil, fmt.Errorf("failed to resolve gateway host %q: %w", resolvedHost, err)
+	}
+	gatewayIP := addrs[0]
+
+	port := target.Port()
+	if port == "" {
+		port = "443"
+		if target.Scheme == "http" {
+			port = "80"
+		}
+	}
+	dialAddr := net.JoinHostPort(gatewayIP, port)
+
 	transport := &http.Transport{
-		Proxy:                 http.ProxyFromEnvironment,
-		DialContext:           (&net.Dialer{Timeout: 30 * time.Second, KeepAlive: 30 * time.Second}).DialContext,
+		Proxy: http.ProxyFromEnvironment,
+		DialContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
+			return (&net.Dialer{Timeout: 30 * time.Second, KeepAlive: 30 * time.Second}).DialContext(ctx, network, dialAddr)
+		},
 		MaxIdleConns:          100,
 		IdleConnTimeout:       90 * time.Second,
 		TLSHandshakeTimeout:   10 * time.Second,
@@ -31,16 +50,16 @@ func newGatewayProxy(gatewayURL string, logger *zap.Logger) (http.Handler, error
 
 	proxy := &httputil.ReverseProxy{
 		Director: func(req *http.Request) {
-			originalHost := req.Host
-
 			req.URL.Scheme = target.Scheme
-			req.URL.Host = target.Host
 			req.URL.Path = singleJoiningSlash(target.Path, req.URL.Path)
 			req.URL.RawPath = singleJoiningSlash(target.RawPath, req.URL.RawPath)
-			req.Host = target.Host
+
+			if req.URL.Host == "" {
+				req.URL.Host = req.Host
+			}
 
 			req.Header.Del("X-Forwarded-Host")
-			req.Header.Set("X-Forwarded-Host", originalHost)
+			req.Header.Set("X-Forwarded-Host", req.Host)
 
 			clientIP, _, err := net.SplitHostPort(req.RemoteAddr)
 			if err != nil {
