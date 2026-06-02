@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"go.uber.org/zap"
 )
 
@@ -19,7 +20,7 @@ func newGatewayProxy(gatewayURL string, logger *zap.Logger) (http.Handler, error
 		return nil, fmt.Errorf("invalid gateway URL: %w", err)
 	}
 
-	transport := &http.Transport{
+	baseTransport := &http.Transport{
 		Proxy:                 http.ProxyFromEnvironment,
 		DialContext:           (&net.Dialer{Timeout: 30 * time.Second, KeepAlive: 30 * time.Second}).DialContext,
 		MaxIdleConns:          100,
@@ -51,7 +52,13 @@ func newGatewayProxy(gatewayURL string, logger *zap.Logger) (http.Handler, error
 			req.Header.Set("X-Forwarded-For", clientIP)
 		},
 		ErrorHandler: func(w http.ResponseWriter, req *http.Request, err error) {
-			logger.Error("gateway proxy error", zap.Error(err))
+			logger.Error("gateway proxy error",
+				zap.Error(err),
+				zap.String("host", req.Host),
+				zap.String("path", req.URL.Path),
+				zap.String("method", req.Method),
+				zap.String("remote_addr", req.RemoteAddr),
+			)
 
 			if os.IsTimeout(err) {
 				http.Error(w, "Gateway Timeout", http.StatusGatewayTimeout)
@@ -60,7 +67,7 @@ func newGatewayProxy(gatewayURL string, logger *zap.Logger) (http.Handler, error
 
 			http.Error(w, "Bad Gateway", http.StatusBadGateway)
 		},
-		Transport: transport,
+		Transport: otelhttp.NewTransport(baseTransport),
 	}
 
 	return proxy, nil

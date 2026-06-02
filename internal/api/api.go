@@ -85,6 +85,9 @@ func (a *API) Configure(gRouter router.Router, _ core.AccessService) error {
 }
 
 func (a *API) createGitHubFS(gitRepo string) (fs.FS, error) {
+	ctx, span := core.TraceMethod(a.Context().GetContext(), "API.createGitHubFS")
+	defer span.End()
+
 	u, err := url.Parse(gitRepo)
 	if err != nil {
 		return nil, err
@@ -105,27 +108,30 @@ func (a *API) createGitHubFS(gitRepo string) (fs.FS, error) {
 	repo := components[1]
 
 	// Build a GitHub client with auth if GITHUB_TOKEN is present and set sane timeouts.
-	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	repoCtx, cancel := context.WithTimeout(ctx, 60*time.Second)
 	defer cancel()
 	httpClient := &http.Client{Timeout: 60 * time.Second}
 	if token := os.Getenv("GITHUB_TOKEN"); token != "" {
 		ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
-		httpClient = oauth2.NewClient(ctx, ts)
+		httpClient = oauth2.NewClient(repoCtx, ts)
 		// Ensure the OAuth2 client still has a sane timeout.
 		httpClient.Timeout = 60 * time.Second
 	}
 	client := github.NewClient(httpClient)
 
-	release, _, err := client.Repositories.GetLatestRelease(ctx, owner, repo)
+	release, _, err := client.Repositories.GetLatestRelease(repoCtx, owner, repo)
 	if err != nil {
+		core.EndSpanWithErr(span, err)
 		return nil, err
 	}
 
 	if release.ZipballURL == nil || *release.ZipballURL == "" {
-		return nil, fmt.Errorf("latest release for %s/%s has no zipball URL", owner, repo)
+		err := fmt.Errorf("latest release for %s/%s has no zipball URL", owner, repo)
+		core.EndSpanWithErr(span, err)
+		return nil, err
 	}
 
-	req, err := http.NewRequestWithContext(ctx, "GET", *release.ZipballURL, nil)
+	req, err := http.NewRequestWithContext(repoCtx, "GET", *release.ZipballURL, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -135,6 +141,7 @@ func (a *API) createGitHubFS(gitRepo string) (fs.FS, error) {
 	// Use the same (possibly OAuth2) httpClient for the zipball request.
 	resp, err := httpClient.Do(req)
 	if err != nil {
+		core.EndSpanWithErr(span, err)
 		return nil, err
 	}
 
@@ -145,19 +152,23 @@ func (a *API) createGitHubFS(gitRepo string) (fs.FS, error) {
 	}()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("unexpected status fetching zipball: %s", resp.Status)
+		err := fmt.Errorf("unexpected status fetching zipball: %s", resp.Status)
+		core.EndSpanWithErr(span, err)
+		return nil, err
 	}
 
 	// Cap the download to a reasonable size (200 MiB) to avoid OOM on malformed releases.
 	const maxZipSize = 200 << 20
 	buf, err := io.ReadAll(io.LimitReader(resp.Body, maxZipSize))
 	if err != nil {
+		core.EndSpanWithErr(span, err)
 		return nil, err
 	}
 
 	byteReader := bytes.NewReader(buf)
 	zipFs, err := zip.NewReader(byteReader, int64(byteReader.Len()))
 	if err != nil {
+		core.EndSpanWithErr(span, err)
 		return nil, err
 	}
 
@@ -165,6 +176,7 @@ func (a *API) createGitHubFS(gitRepo string) (fs.FS, error) {
 	// Prefer <top>/dist if present, else <top>.
 	entries, err := fs.ReadDir(zipFs, ".")
 	if err != nil {
+		core.EndSpanWithErr(span, err)
 		return nil, err
 	}
 
