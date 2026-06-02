@@ -66,7 +66,7 @@ func TestNewGatewayProxy_BadGateway(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Get: %v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	if resp.StatusCode != http.StatusBadGateway {
 		t.Errorf("status = %d, want 502", resp.StatusCode)
