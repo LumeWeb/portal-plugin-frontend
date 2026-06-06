@@ -539,8 +539,8 @@ go.lumeweb.com/portal-router v0.6.16 h1:/2HZfXCpVfTTWNBmVfrCCLtYVm6vpXUD5aAKjPPQ
 go.lumeweb.com/portal-router v0.6.16/go.mod h1:hl51sHDKcgw8yxJ6RraYBOI1Vnufq33FhKwfKiqCkVg=
 go.lumeweb.com/queryutil v0.3.16 h1:4ShUZdaov+jBRWTkABaa8j1QnDSUv1AtVDJd6IbPO3Y=
 go.lumeweb.com/queryutil v0.3.16/go.mod h1:nLkIuXzugX8Ln24wsAbfTafvNmaTHLJhIUKWC1693G4=
-go.lumeweb.com/web/go/portal-frontend v0.0.0-20260605173110-007f18ff241a h1:TbB8d+HM9VTFUxIQt+qU4gTsc8IFmhJvKjRIjqn4dAA=
-go.lumeweb.com/web/go/portal-frontend v0.0.0-20260605173110-007f18ff241a/go.mod h1:PXTl7R6Rzt8usd6KsuNYQ/Kd9ITvmI5GxQXKQipPFbE=
+go.lumeweb.com/web/go/portal-frontend v0.0.0-20260606140504-280cab62aeb6 h1:p5pcegGY5vWAX+isC+hywMLH3OXpq6DDT3B5PJXGDCA=
+go.lumeweb.com/web/go/portal-frontend v0.0.0-20260606140504-280cab62aeb6/go.mod h1:PXTl7R6Rzt8usd6KsuNYQ/Kd9ITvmI5GxQXKQipPFbE=
 go.opentelemetry.io/auto/sdk v1.2.1 h1:jXsnJ4Lmnqd11kwkBV2LgLoFMZKizbCi5fNZ/ipaZ64=
 go.opentelemetry.io/auto/sdk v1.2.1/go.mod h1:KRTj+aOaElaLi+wW1kO/DZRXwkF4C5xPbEe3ZiIhN7Y=
 go.opentelemetry.io/contrib/bridges/otelzap v0.19.0 h1:48Eq3xxFx2KlL/tF7lnl42kKJBDlhNTLRzv0h154JnM=
