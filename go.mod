@@ -129,7 +129,7 @@ require (
 	go.lumeweb.com/event/v2 v2.1.0 // indirect
 	go.lumeweb.com/gswagger v0.20.12 // indirect
 	go.lumeweb.com/portal-middleware v0.3.7 // indirect
-	go.lumeweb.com/queryutil v0.3.16 // indirect
+	go.lumeweb.com/queryutil v0.3.17 // indirect
 	go.opentelemetry.io/auto/sdk v1.2.1 // indirect
 	go.opentelemetry.io/contrib/bridges/otelzap v0.19.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/runtime v0.68.0 // indirect
