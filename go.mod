@@ -6,7 +6,7 @@ require (
 	github.com/google/go-github/v50 v50.2.0
 	go.lumeweb.com/portal v0.5.1
 	go.lumeweb.com/portal-router v0.7.6
-	go.lumeweb.com/web/go/portal-frontend v0.0.0-20260904063331-5621276e9357
+	go.lumeweb.com/web/go/portal-frontend v0.0.0-20260921145210-452f6c7da66c
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.69.0
 	go.uber.org/zap v1.28.0
 	golang.org/x/oauth2 v0.36.0
